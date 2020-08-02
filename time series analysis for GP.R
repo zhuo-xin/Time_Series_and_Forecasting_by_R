@@ -1,4 +1,4 @@
-dat<-read.table("E:\\onedriveÎÄ¼ş¼Ğ\\OneDrive - Cardiff University\\2Ñ§ÆÚ\\Ê±¼äĞòÁĞ\\×÷Òµ\\CourseworkData19_20.csv",header = T,sep=",")
+dat<-read.table("CourseworkData19_20.csv",header = T,sep=",")
 dat
 data_patients<-dat[,2]
 data_patients
@@ -10,21 +10,21 @@ v
 t <- ts(data=v,frequency=7)
 plot(t,type='b')
 
-#»­MA7µÄÒÆ¶¯Æ½¾ùÊıÍ¼
-mav <- function(x,n){filter(x,rep(1/n,n), sides=2)}     #µÚÒ»²½MAÖµ£¬×óÓÒÁ½²à¶¼ÓĞÖµ
+#ç”»MA7çš„ç§»åŠ¨å¹³å‡æ•°å›¾
+mav <- function(x,n){filter(x,rep(1/n,n), sides=2)}     #ç¬¬ä¸€æ­¥MAå€¼ï¼Œå·¦å³ä¸¤ä¾§éƒ½æœ‰å€¼
 MA7<-mav(v,7)
 par(mfrow=c(1,1))
 plot(v,type='l',col='black',xlab='time',ylab = 'number of patients')
 lines(MA7,col='yellow')
 legend('topleft',c('orignal data','MA7'),cex=0.8,col=c('black','yellow'),lwd = c(2,2),lty=c(1,1))
 
-#³Ë·¨·Ö½â
+#ä¹˜æ³•åˆ†è§£
 t.md <- decompose(t,"multiplicative") #Multiplicative decomposition
 mdindices <- t.md$seasonal[1:7] #weekly seasonal indices
 mdindices
 plot(t.md)
 
-#¼Ó·¨·Ö½â
+#åŠ æ³•åˆ†è§£
 t.ad <- decompose(t,"additive") #addtive decomposition
 adindices <- t.md$seasonal[1:7] #weekly seasonal indices
 adindices
@@ -44,13 +44,13 @@ var(v)
 
 
 
-#½¨Á¢³õÊ¼¼¯
+#å»ºç«‹åˆå§‹é›†
 t_validation<-t[1:1023]
 t_validation <- ts(data=t_validation,frequency=7)
 plot(t_validation,type='b')
 v_validation<-v[1:1023]
 
-#½¨Á¢ÑµÁ·¼¯
+#å»ºç«‹è®­ç»ƒé›†
 t_test<-t[1024:1461]
 t_test <- ts(data=t_test,frequency=7)
 v_test<-v[1024:1461]
@@ -59,7 +59,7 @@ plot(t_test,type='b')
 
 
 
-#¼òµ¥Í³¼ÆÁ¿
+#ç®€å•ç»Ÿè®¡é‡
 mean(v)                        # mean
 mean(abs(v-mean(v)))           # Mean Absolute Deviation
 sum((v-mean(v))^2)/1460        # Mean Squared Deviation
@@ -67,20 +67,20 @@ sqrt(sum((v-mean(v))^2)/1460)  # Standard Deviation
 summary(v)
 
 
-#naive·½·¨Ô¤²âµÄ¸÷ÖÖÎó²îÇé¿ö
+#naiveæ–¹æ³•é¢„æµ‹çš„å„ç§è¯¯å·®æƒ…å†µ
 NF1<-v[1023:1460]
-errNF<-v[1024:1461]-NF1           # naive·½·¨µÄÎó²î
-perrNF<-100*(errNF/v[1024:1461])  #naive·½·¨µÄ°Ù·Ö±ÈÎó²î
+errNF<-v[1024:1461]-NF1           # naiveæ–¹æ³•çš„è¯¯å·®
+perrNF<-100*(errNF/v[1024:1461])  #naiveæ–¹æ³•çš„ç™¾åˆ†æ¯”è¯¯å·®
 mean(errNF)                   # naive method ME
 mean(abs(errNF))              # naive method MAE
 mean(errNF^2)                 # naive method MSE
 mean(perrNF)                  # naive method MPE
 mean(abs(perrNF))             # naive method MAPE
 
-#Æ½¾ùÊıÔ¤²âµÄÎó²îÇé¿ö
+#å¹³å‡æ•°é¢„æµ‹çš„è¯¯å·®æƒ…å†µ
 MA7<-rep(NA,7)
 for(i in 1024:(length(v)-7)){
-  ma7<-mean(c(v[i], v[i+1],v[i+2],v[i+3],v[i+4],v[i+5],v[i+6]))   #7  moving average¡¾¹«Ê½×ª»»´úÂë¡¿
+  ma7<-mean(c(v[i], v[i+1],v[i+2],v[i+3],v[i+4],v[i+5],v[i+6]))   #7  moving averageã€å…¬å¼è½¬æ¢ä»£ç ã€‘
   MA7<-c(MA7,ma7)
 }
 MA7
@@ -94,7 +94,7 @@ abs(perr)
 mean(err^2,na.rm=T)              #Mean method MSE
 mean(abs(perr),na.rm=T)
 
-#»­Í¼±È½Ïnf ºÍÆ½¾ù µÄÔ¤²â
+#ç”»å›¾æ¯”è¾ƒnf å’Œå¹³å‡ çš„é¢„æµ‹
 plot(v_test,col='red')
 lines(MA7,col='black')
 lines(NF1,col='yellow')
@@ -104,81 +104,81 @@ legend('topleft',c('test set','MA7','NF'),cex=0.8,col=c('red','black','yellow'),
 
 
 
-#SESÔ¤²â
+#SESé¢„æµ‹
 tforecasts<-HoltWinters(t_validation,beta=FALSE,gamma=FALSE) 
-tforecasts        #µÃµ½Ò»¸öºÏÊÊµÄ¦ÁÖµ£¬Ö®ºó´úÈëµ½ÑµÁ·¼¯
-plot(tforecasts,col='yellow')  #³õÊ¼¼¯ÉÏµÄÔ¤²âĞ§¹û
-tforecasts$fitted               #³õÊ¼¼¯ÉÏÄâºÏÖµ
+tforecasts        #å¾—åˆ°ä¸€ä¸ªåˆé€‚çš„Î±å€¼ï¼Œä¹‹åä»£å…¥åˆ°è®­ç»ƒé›†
+plot(tforecasts,col='yellow')  #åˆå§‹é›†ä¸Šçš„é¢„æµ‹æ•ˆæœ
+tforecasts$fitted               #åˆå§‹é›†ä¸Šæ‹Ÿåˆå€¼
 
-t_test_forecasts<-HoltWinters(t_test,alpha = 0.1587094,beta=FALSE,gamma=FALSE) #ÓÃÑµÁ·¼¯Êı¾İ½¨Ä£
+t_test_forecasts<-HoltWinters(t_test,alpha = 0.1587094,beta=FALSE,gamma=FALSE) #ç”¨è®­ç»ƒé›†æ•°æ®å»ºæ¨¡
 t_test_forecasts
-tforecasts3<- predict(t_test_forecasts, n.ahead = 7, prediction.interval = T) #ÑµÁ·¼¯Êı¾İÍùºóÔ¤²â7¸ö
-plot(t_test_forecasts,tforecasts3,main='Single Exponential Smoothing(¦Á=0.1587094)',col='yellow')
-#ÑµÁ·¼¯ÉÏµÄÄâºÏÇé¿öÒÔ¼°Ô¤²âÇø¼ä
-tforecasts3   #7¸öÔ¤²âÖµ
+tforecasts3<- predict(t_test_forecasts, n.ahead = 7, prediction.interval = T) #è®­ç»ƒé›†æ•°æ®å¾€åé¢„æµ‹7ä¸ª
+plot(t_test_forecasts,tforecasts3,main='Single Exponential Smoothing(Î±=0.1587094)',col='yellow')
+#è®­ç»ƒé›†ä¸Šçš„æ‹Ÿåˆæƒ…å†µä»¥åŠé¢„æµ‹åŒºé—´
+tforecasts3   #7ä¸ªé¢„æµ‹å€¼
 
-MSE_t_test <- t_test_forecasts$SSE / length(t_test_forecasts$fitted[,1])#ÑµÁ·¼¯ÉÏµÄÊµ¼ÊÖµºÍÄâºÏÖµµÃµ½µÄMSE
-MSE_t_test        #Îó²îÍ³¼ÆÁ¿£¬ÓëÇ°ÃæµÄ·½·¨±È½Ï
+MSE_t_test <- t_test_forecasts$SSE / length(t_test_forecasts$fitted[,1])#è®­ç»ƒé›†ä¸Šçš„å®é™…å€¼å’Œæ‹Ÿåˆå€¼å¾—åˆ°çš„MSE
+MSE_t_test        #è¯¯å·®ç»Ÿè®¡é‡ï¼Œä¸å‰é¢çš„æ–¹æ³•æ¯”è¾ƒ
 
 #holt linear
 tforecasts_hl <- HoltWinters(t_validation,gamma = FALSE)
-tforecasts_hl #ÔÚ³õÊ¼¼¯ÉÏ²ÎÊı±»¹À¼Æ³öÀ´ alpha: 0.2285297 beta : 0.1620096
-plot(tforecasts_hl,col='yellow')  #³õÊ¼¼¯ÉÏµÄÔ¤²âĞ§¹û
+tforecasts_hl #åœ¨åˆå§‹é›†ä¸Šå‚æ•°è¢«ä¼°è®¡å‡ºæ¥ alpha: 0.2285297 beta : 0.1620096
+plot(tforecasts_hl,col='yellow')  #åˆå§‹é›†ä¸Šçš„é¢„æµ‹æ•ˆæœ
 
 t_test_forecasts_hl<-HoltWinters(t_test,alpha = 0.2285297,beta=0.1620096,gamma=FALSE)
 t_test_forecasts_hl
-tforecasts222<- predict(t_test_forecasts_hl, n.ahead = 7, prediction.interval = T) #ÑµÁ·¼¯Êı¾İÍùºóÔ¤²â7¸ö
-plot(t_test_forecasts_hl,tforecasts222,main='Holt¡¯s Linear Method (¦Á=0.2285297,¦Â=0.1620096)',col='yellow')
-#ÑµÁ·¼¯ÉÏµÄÄâºÏÇé¿öÒÔ¼°Ô¤²âÇø¼ä
-tforecasts222   #7¸öÔ¤²âÖµ
+tforecasts222<- predict(t_test_forecasts_hl, n.ahead = 7, prediction.interval = T) #è®­ç»ƒé›†æ•°æ®å¾€åé¢„æµ‹7ä¸ª
+plot(t_test_forecasts_hl,tforecasts222,main='Holtâ€™s Linear Method (Î±=0.2285297,Î²=0.1620096)',col='yellow')
+#è®­ç»ƒé›†ä¸Šçš„æ‹Ÿåˆæƒ…å†µä»¥åŠé¢„æµ‹åŒºé—´
+tforecasts222   #7ä¸ªé¢„æµ‹å€¼
 
-MSE_t_test_hl <- t_test_forecasts_hl$SSE / length(t_test_forecasts_hl$fitted[,1])#ÑµÁ·¼¯ÉÏµÄÊµ¼ÊÖµºÍÄâºÏÖµµÃµ½µÄMSE
-MSE_t_test_hl        #Îó²îÍ³¼ÆÁ¿£¬ÓëÇ°ÃæµÄ·½·¨±È½Ï
+MSE_t_test_hl <- t_test_forecasts_hl$SSE / length(t_test_forecasts_hl$fitted[,1])#è®­ç»ƒé›†ä¸Šçš„å®é™…å€¼å’Œæ‹Ÿåˆå€¼å¾—åˆ°çš„MSE
+MSE_t_test_hl        #è¯¯å·®ç»Ÿè®¡é‡ï¼Œä¸å‰é¢çš„æ–¹æ³•æ¯”è¾ƒ
 
 
 #holt winter add
 tforecasts_hwa <- HoltWinters(t_validation)
 tforecasts_hwa # alpha: 0.1962084 beta : 0.002539499 gamma: 0.1092765
 
-plot(tforecasts_hwa,col='yellow')  #³õÊ¼¼¯ÉÏµÄÔ¤²âĞ§¹û
+plot(tforecasts_hwa,col='yellow')  #åˆå§‹é›†ä¸Šçš„é¢„æµ‹æ•ˆæœ
 
 t_test_forecasts_hwa<-HoltWinters(t_test,alpha= 0.1962084,beta =0.002539499 ,gamma=0.1092765)
 t_test_forecasts_hwa
 
-MSE_t_test_hwa <- t_test_forecasts_hwa$SSE / length(t_test_forecasts_hwa$fitted[,1])#ÑµÁ·¼¯ÉÏµÄÊµ¼ÊÖµºÍÄâºÏÖµµÃµ½µÄMSE
-MSE_t_test_hwa       #Îó²îÍ³¼ÆÁ¿£¬ÓëÇ°ÃæµÄ·½·¨±È½Ï
+MSE_t_test_hwa <- t_test_forecasts_hwa$SSE / length(t_test_forecasts_hwa$fitted[,1])#è®­ç»ƒé›†ä¸Šçš„å®é™…å€¼å’Œæ‹Ÿåˆå€¼å¾—åˆ°çš„MSE
+MSE_t_test_hwa       #è¯¯å·®ç»Ÿè®¡é‡ï¼Œä¸å‰é¢çš„æ–¹æ³•æ¯”è¾ƒ
 
-tforecasts333<- predict(t_test_forecasts_hwa, n.ahead = 7, prediction.interval = T) #ÑµÁ·¼¯Êı¾İÍùºóÔ¤²â7¸ö
-plot(t_test_forecasts_hwa,tforecasts333,main='Holt Winters¡¯ Additive Method (¦Á=0.1962084,¦Â=0.002539499,¦Ã=0.1092765)',col='yellow')
-#ÑµÁ·¼¯ÉÏµÄÄâºÏÇé¿öÒÔ¼°Ô¤²âÇø¼ä
-tforecasts333   #7¸öÔ¤²âÖµ
+tforecasts333<- predict(t_test_forecasts_hwa, n.ahead = 7, prediction.interval = T) #è®­ç»ƒé›†æ•°æ®å¾€åé¢„æµ‹7ä¸ª
+plot(t_test_forecasts_hwa,tforecasts333,main='Holt Wintersâ€™ Additive Method (Î±=0.1962084,Î²=0.002539499,Î³=0.1092765)',col='yellow')
+#è®­ç»ƒé›†ä¸Šçš„æ‹Ÿåˆæƒ…å†µä»¥åŠé¢„æµ‹åŒºé—´
+tforecasts333   #7ä¸ªé¢„æµ‹å€¼
 
 
 #holt winter mul
 tforecasts_hwm <- HoltWinters(t_validation,seasonal = 'multiplicative')
 tforecasts_hwm # alpha: 0.1886014 beta : 0.003300901 gamma: 0.09117969
 
-plot(tforecasts_hwm,col='yellow')  #³õÊ¼¼¯ÉÏµÄÔ¤²âĞ§¹û
+plot(tforecasts_hwm,col='yellow')  #åˆå§‹é›†ä¸Šçš„é¢„æµ‹æ•ˆæœ
 
 t_test_forecasts_hwm<-HoltWinters(t_test,alpha=0.1886014, beta= 0.003300901 ,gamma=0.09117969,seasonal = 'multiplicative')
 t_test_forecasts_hwm
 
-MSE_t_test_hwm <- t_test_forecasts_hwm$SSE / length(t_test_forecasts_hwm$fitted[,1])#ÑµÁ·¼¯ÉÏµÄÊµ¼ÊÖµºÍÄâºÏÖµµÃµ½µÄMSE
-MSE_t_test_hwm       #Îó²îÍ³¼ÆÁ¿£¬ÓëÇ°ÃæµÄ·½·¨±È½Ï
+MSE_t_test_hwm <- t_test_forecasts_hwm$SSE / length(t_test_forecasts_hwm$fitted[,1])#è®­ç»ƒé›†ä¸Šçš„å®é™…å€¼å’Œæ‹Ÿåˆå€¼å¾—åˆ°çš„MSE
+MSE_t_test_hwm       #è¯¯å·®ç»Ÿè®¡é‡ï¼Œä¸å‰é¢çš„æ–¹æ³•æ¯”è¾ƒ
 
-tforecasts444<- predict(t_test_forecasts_hwm, n.ahead = 7, prediction.interval = T) #ÑµÁ·¼¯Êı¾İÍùºóÔ¤²â7¸ö
-plot(t_test_forecasts_hwm,tforecasts444,main='Holt Winters¡¯ Multiplicative Method (¦Á=0.1886014, ¦Â= 0.003300901 ,¦Ã=0.09117969)',col='yellow',ylim = c(0,100))
-#ÑµÁ·¼¯ÉÏµÄÄâºÏÇé¿öÒÔ¼°Ô¤²âÇø¼ä
-tforecasts444  #7¸öÔ¤²âÖµ
+tforecasts444<- predict(t_test_forecasts_hwm, n.ahead = 7, prediction.interval = T) #è®­ç»ƒé›†æ•°æ®å¾€åé¢„æµ‹7ä¸ª
+plot(t_test_forecasts_hwm,tforecasts444,main='Holt Wintersâ€™ Multiplicative Method (Î±=0.1886014, Î²= 0.003300901 ,Î³=0.09117969)',col='yellow',ylim = c(0,100))
+#è®­ç»ƒé›†ä¸Šçš„æ‹Ÿåˆæƒ…å†µä»¥åŠé¢„æµ‹åŒºé—´
+tforecasts444  #7ä¸ªé¢„æµ‹å€¼
 
 help("matrix")
 help(layout)
 
-#arimaÄ£ĞÍ
-#½¨Á¢ĞÂµÄ³õÊ¼¼¯
+#arimaæ¨¡å‹
+#å»ºç«‹æ–°çš„åˆå§‹é›†
 t_validation<-t[1:1023]
 t_validation <- ts(data=t_validation,frequency=1)
-#½¨Á¢ĞÂµÄÑµÁ·¼¯
+#å»ºç«‹æ–°çš„è®­ç»ƒé›†
 t_test<-t[1024:1461]
 t_test <- ts(data=t_test,frequency=1)
 layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
@@ -197,12 +197,12 @@ adf.test(t_validation,k=3)
 help(adf.test)
 
 
-#½øĞĞ²î·Ö´¦Àí
+#è¿›è¡Œå·®åˆ†å¤„ç†
 par(mfrow=c(2,1))
 plot(t_validation, ylab="Original")
 plot(diff(t_validation), ylab="1st order diff")
 plot(diff(t_validation, d=2), ylab="2nd order diff")
-#¿ÉÒÔ·¢ÏÖÒ»½×²î·Ö¾Í×ã¹»ÁË
+#å¯ä»¥å‘ç°ä¸€é˜¶å·®åˆ†å°±è¶³å¤Ÿäº†
 s1<-diff(t_validation,1)
 par(mfrow=c(1,1))
 plot(s1)
@@ -212,10 +212,10 @@ plot(s1, ylab="values", main="1 order diff Time Series")
 s1.acf <- acf(s1, lag.max = 35, main="")
 s1.pacf <- pacf(s1, lag.max = 35, main="")
 
-adf.test(s1)#Ê¹ÓÃadf¼ìÑé£¬¿´Ò»ÏÂÊÇ·ñ´æÔÚµ¥Î»¸ù£¨ÑéÖ¤Æ½ÎÈĞÔ£¬Èô´æÔÚÔò²»Æ½ÎÈ£©pÖµĞ¡ÓÚ0.05£¬ËùÒÔ»ù±¾Æ½ÎÈ
+adf.test(s1)#ä½¿ç”¨adfæ£€éªŒï¼Œçœ‹ä¸€ä¸‹æ˜¯å¦å­˜åœ¨å•ä½æ ¹ï¼ˆéªŒè¯å¹³ç¨³æ€§ï¼Œè‹¥å­˜åœ¨åˆ™ä¸å¹³ç¨³ï¼‰på€¼å°äº0.05ï¼Œæ‰€ä»¥åŸºæœ¬å¹³ç¨³
 
-#Í¼ĞÎÏÔÊ¾acfÍ¼´æÔÚÍÏÎ²£¬q=0£¬pacfÍ¼³¬³öĞéÏß½Ï¶à£¬µ«´ÓÕûÌåÉÏ¿´£¬´Ó16½×Ö®ºó½Ø¶Ï£¬¶øÉÏÃæµÄÏß¿ÉÒÔ´ó¸Å¿´µ½£¨1£¬2£¬3£¬5£¬7£©ÕâÎå¸öÊı³¬³öĞéÏßÉõ¶à£¬ËùÒÔ£¬¿ÉÒÔÃ¿¸ö¶¼²âÊÔÒ»ÏÂ¡£ĞÎ³É(1,1,0)(2,1,0),(3,1,0),(5,1,0),(7,1,0),È»ºóÅĞ¶ÏÒ»ÏÂ¸÷×ÔµÄAICÖµ£¬È¡×îĞ¡Öµ¼´¿É¡£
-##ÇÒacfÍ¼´æÔÚÒ»¸ö7½×µÄ¼¾½ÚĞÔÓ°ÏìÒòËØ£¬È»ºóÍ¨¹ı×÷ÖÍºó7½×µÄÍ¼¿´Ò»ÏÂÊÇ·ñÏû³ı
+#å›¾å½¢æ˜¾ç¤ºacfå›¾å­˜åœ¨æ‹–å°¾ï¼Œq=0ï¼Œpacfå›¾è¶…å‡ºè™šçº¿è¾ƒå¤šï¼Œä½†ä»æ•´ä½“ä¸Šçœ‹ï¼Œä»16é˜¶ä¹‹åæˆªæ–­ï¼Œè€Œä¸Šé¢çš„çº¿å¯ä»¥å¤§æ¦‚çœ‹åˆ°ï¼ˆ1ï¼Œ2ï¼Œ3ï¼Œ5ï¼Œ7ï¼‰è¿™äº”ä¸ªæ•°è¶…å‡ºè™šçº¿ç”šå¤šï¼Œæ‰€ä»¥ï¼Œå¯ä»¥æ¯ä¸ªéƒ½æµ‹è¯•ä¸€ä¸‹ã€‚å½¢æˆ(1,1,0)(2,1,0),(3,1,0),(5,1,0),(7,1,0),ç„¶ååˆ¤æ–­ä¸€ä¸‹å„è‡ªçš„AICå€¼ï¼Œå–æœ€å°å€¼å³å¯ã€‚
+##ä¸”acfå›¾å­˜åœ¨ä¸€ä¸ª7é˜¶çš„å­£èŠ‚æ€§å½±å“å› ç´ ï¼Œç„¶åé€šè¿‡ä½œæ»å7é˜¶çš„å›¾çœ‹ä¸€ä¸‹æ˜¯å¦æ¶ˆé™¤
 s7<-diff(s1,lag=7)
 layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
 plot(s7, ylab="values", main="7 order diff Time Series")
@@ -260,28 +260,28 @@ arima.best <- function(x, maxord = c(1,1,1))
   z = list(model = best.model, fitted = best.fit, AIC = best.aic, Elapsed = Sys.time()-start);
   return(z)
 }
-arima.best(t_validation) #×îÓÅÊÇ0£¬1£¬1 AIC=7447.77
+arima.best(t_validation) #æœ€ä¼˜æ˜¯0ï¼Œ1ï¼Œ1 AIC=7447.77
 
-#±È½ÏAIC×îĞ¡µÄÊÇ7£¬1£¬0 ÖÜÆÚÎª7
+#æ¯”è¾ƒAICæœ€å°çš„æ˜¯7ï¼Œ1ï¼Œ0 å‘¨æœŸä¸º7
 
-#Õï¶Ï¼ìÑé
+#è¯Šæ–­æ£€éªŒ
 fit1<-arima(t_test,order=c(7,1,0),seasonal=list(order=c(1,1,1),period=7))
 fit1$sigma2
 tsdiag(fit1)
 
-#ÀûÓÃÑ¡ÔñµÄarima£¨7£¬1£¬0£©£¨1£¬1£¬1£©[7]À´Ô¤²â
+#åˆ©ç”¨é€‰æ‹©çš„arimaï¼ˆ7ï¼Œ1ï¼Œ0ï¼‰ï¼ˆ1ï¼Œ1ï¼Œ1ï¼‰[7]æ¥é¢„æµ‹
 f.p1<-forecast(fit1,h=7,level=c(99.5))
 par(mfrow=c(1,1))
 plot(f.p1)
 f.p1
 
-#»Ø¹é·½·¨
+#å›å½’æ–¹æ³•
 x_validation<-1:1023
 lm( v_validation~ x_validation)
 lm.r<-lm( v_validation~ x_validation)
-anova(lm.r) #·½²î·ÖÎö¼ÙÉè£ºÊ±¼ä¶Ô²¡ÈËÊıÃ»ÓĞÏÔÖøÓ°Ïì pÖµĞ¡ÓÚ0.05¾Ü¾øÁË
+anova(lm.r) #æ–¹å·®åˆ†æå‡è®¾ï¼šæ—¶é—´å¯¹ç—…äººæ•°æ²¡æœ‰æ˜¾è‘—å½±å“ på€¼å°äº0.05æ‹’ç»äº†
 summary(lm.r)
-#F¼ìÑé£ºÏßĞÔ¹ØÏµ²»ÏÔÖø t¼ìÑé£ºÏµÊıÎª0 ¶¼±»¾Ü¾ø
+#Fæ£€éªŒï¼šçº¿æ€§å…³ç³»ä¸æ˜¾è‘— tæ£€éªŒï¼šç³»æ•°ä¸º0 éƒ½è¢«æ‹’ç»
 
 plot(lm.r)
 
@@ -297,11 +297,11 @@ lm.r2<-lm( v_validation~ x_validation+ I(x_validation^2))
 summary(lm.r2)
 
 
-#×Ü½á¶Ô±ÈMSE
+#æ€»ç»“å¯¹æ¯”MSE
 mean(errNF^2)                    # naive method MSE
 mean(err^2,na.rm=T)              # Simple averages method MSE
 MSE_t_test                       # Single exponential smoothing method MSE
-MSE_t_test_hl                    # Holt¡¯s Linear Method MSE
-MSE_t_test_hwa                   # Holt Winters¡¯ Additive Method MSE
-MSE_t_test_hwm                   # Holt Winters¡¯ Multiplicative Method MSE
+MSE_t_test_hl                    # Holtâ€™s Linear Method MSE
+MSE_t_test_hwa                   # Holt Wintersâ€™ Additive Method MSE
+MSE_t_test_hwm                   # Holt Wintersâ€™ Multiplicative Method MSE
 mean(err_reg^2)                  # linear regression method MSE
